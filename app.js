@@ -11,6 +11,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/users', require('./routes/user'));
+app.use('/cards', require('./routes/card'));
 
 app.use((req, res, next) => {
   req.user = {
