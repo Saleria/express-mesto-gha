@@ -9,16 +9,16 @@ module.exports.getCards = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданы некорректные данные');
+        return next(new ValidationError('Переданы некорректные данные'));
       }
-      res.status(ERROR_CODE).send({ message: 'Произошла ошибка' });
+      return res.status(ERROR_CODE).send({ message: 'Произошла ошибка' });
     });
 };
 
