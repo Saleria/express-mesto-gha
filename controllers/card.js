@@ -1,4 +1,7 @@
 const Card = require('../models/card');
+const ValidationError = require('../errors/ValidationError');
+
+const ERROR_CODE = 500;
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -11,7 +14,12 @@ module.exports.createCard = (req, res) => {
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => res.status(201).send(card))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new ValidationError('Переданы некорректные данные');
+      }
+      res.status(ERROR_CODE).send({ message: 'Произошла ошибка' });
+    });
 };
 
 module.exports.deleteCard = (req, res) => {
