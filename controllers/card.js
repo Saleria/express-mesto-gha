@@ -1,11 +1,17 @@
 const Card = require('../models/card');
 const ValidationError = require('../errors/ValidationError');
 const ServerError = require('../errors/ServerError');
+const FoundError = require('../errors/FoundError');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'FoundError') {
+        return next(new FoundError('Карточка не найдена'));
+      }
+      return next(new ServerError('Произошла ошибка'));
+    });
 };
 
 module.exports.createCard = (req, res, next) => {
@@ -21,11 +27,11 @@ module.exports.createCard = (req, res, next) => {
     });
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findByIdAndDelete(cardId)
     .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => next(new ServerError('Произошла ошибка')));
 };
 
 module.exports.likeCard = (req, res) => {
