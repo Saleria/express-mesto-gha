@@ -29,6 +29,7 @@ module.exports.createUser = (req, res, next) => {
       name: user.name,
       about: user.about,
       avatar: user.avatar,
+      _id: user.id,
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
