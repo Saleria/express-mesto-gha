@@ -12,12 +12,13 @@ module.exports.getUser = (req, res) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-  User.findById(req.params.id)
+  const { userId } = req.params.id;
+  User.findById(userId)
     .then((user) => {
       if (!user) {
-        return next(new FoundError('Пользователь не найден'));
+        next(new FoundError('Пользователь не найден'));
       }
-      return res.status(200).send(user);
+      res.status(200).send(user);
     }).catch(() => next(new ServerError('Произошла ошибка')));
 };
 
@@ -27,9 +28,9 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new ValidationError('Переданы некорректные данные'));
+        next(new ValidationError('Переданы некорректные данные'));
       }
-      return next(new ServerError('Произошла ошибка'));
+      next(new ServerError('Произошла ошибка'));
     });
 };
 
@@ -42,9 +43,9 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new ValidationError('Переданы некорректные данные'));
+        next(new ValidationError('Переданы некорректные данные'));
       }
-      return next(new ServerError('Произошла ошибка'));
+      next(new ServerError('Произошла ошибка'));
     });
 };
 
