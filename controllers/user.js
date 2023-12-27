@@ -51,9 +51,14 @@ module.exports.updateUser = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.name === 'CastError') {
+    .then((user) => {
+      if (!user) {
+        res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь не найден' });
+        return;
+      }
+      res.status(200).send({ user });
+    }).catch((err) => {
+      if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
@@ -66,9 +71,14 @@ module.exports.updateAvatar = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.name === 'CastError') {
+    .then((user) => {
+      if (!user) {
+        res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь не найден' });
+        return;
+      }
+      res.status(200).send({ user });
+    }).catch((err) => {
+      if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
