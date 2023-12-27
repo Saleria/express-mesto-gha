@@ -54,6 +54,7 @@ module.exports.updateUser = (req, res) => {
     .then((user) => res.status(200).send({
       name: user.name,
       about: user.about,
+      _id: user.id,
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -71,6 +72,7 @@ module.exports.updateAvatar = (req, res) => {
   })
     .then((user) => res.status(200).send({
       avatar: user.avatar,
+      _id: user.id,
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
