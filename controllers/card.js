@@ -8,7 +8,7 @@ module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(OK).send(cards))
     .catch(() => {
-      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -26,7 +26,7 @@ module.exports.createCard = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
-      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -43,7 +43,7 @@ module.exports.deleteCard = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
-      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -64,7 +64,7 @@ module.exports.likeCard = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
-      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -85,6 +85,6 @@ module.exports.dislikeCard = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
-      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
