@@ -7,11 +7,8 @@ const ERROR_NOT_FOUND = 404;
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
-    .catch((err) => {
-      if (err.name === 'FoundError') {
-        return res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
-      }
-      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+    .catch(() => {
+      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
