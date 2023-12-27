@@ -1,12 +1,12 @@
 const Card = require('../models/card');
 
-const ERROR_CODE = 400;
-const SERVER_ERROR = 500;
-const ERROR_NOT_FOUND = 404;
+const {
+  ERROR_CODE, SERVER_ERROR, ERROR_NOT_FOUND, OK, CREATED_OK,
+} = require('../responses/responses');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
-    .then((cards) => res.status(200).send(cards))
+    .then((cards) => res.status(OK).send(cards))
     .catch(() => {
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
@@ -16,7 +16,7 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((card) => res.status(201).send({
+    .then((card) => res.status(CREATED_OK).send({
       name: card.name,
       link: card.link,
       _id: card._id,
@@ -37,7 +37,7 @@ module.exports.deleteCard = (req, res) => {
         res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
         return;
       }
-      res.status(200).send(card);
+      res.status(OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -58,7 +58,7 @@ module.exports.likeCard = (req, res) => {
         res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
         return;
       }
-      res.status(200).send(card);
+      res.status(OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -79,7 +79,7 @@ module.exports.dislikeCard = (req, res) => {
         res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
         return;
       }
-      res.status(200).send(card);
+      res.status(OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
