@@ -34,8 +34,7 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  const { cardId } = req.params;
-  Card.findByIdAndDelete(cardId)
+  Card.findByIdAndDelete(req.params.cardId)
     .then((card) => {
       if (!card) {
         res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
@@ -44,7 +43,7 @@ module.exports.deleteCard = (req, res) => {
       res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === 'UncorrectError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
@@ -65,7 +64,7 @@ module.exports.likeCard = (req, res) => {
       res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === 'UncorrectError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
@@ -86,7 +85,7 @@ module.exports.dislikeCard = (req, res) => {
       res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === 'UncorrectError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
