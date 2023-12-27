@@ -13,8 +13,7 @@ module.exports.getUser = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  const { userId } = req.params.id;
-  User.findById(userId)
+  User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
         res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь не найден' });
