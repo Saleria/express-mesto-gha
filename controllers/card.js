@@ -1,37 +1,38 @@
 const Card = require('../models/card');
-const ValidationError = require('../errors/ValidationError');
-const ServerError = require('../errors/ServerError');
-const FoundError = require('../errors/FoundError');
 
-module.exports.getCards = (req, res, next) => {
+const ERROR_CODE = 400;
+const SERVER_ERROR = 500;
+const ERROR_NOT_FOUND = 404;
+
+module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
     .catch((err) => {
       if (err.name === 'FoundError') {
-        return next(new FoundError('Карточка не найдена'));
+        return res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
       }
-      return next(new ServerError('Произошла ошибка'));
+      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
-module.exports.createCard = (req, res, next) => {
+module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new ValidationError('Переданы некорректные данные'));
+        return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
-      return next(new ServerError('Произошла ошибка'));
+      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
-module.exports.deleteCard = (req, res, next) => {
+module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndDelete(cardId)
     .then((card) => res.status(200).send(card))
-    .catch(() => next(new ServerError('Произошла ошибка')));
+    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.likeCard = (req, res) => {
@@ -41,7 +42,7 @@ module.exports.likeCard = (req, res) => {
     { new: true },
   )
     .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.dislikeCard = (req, res) => {
@@ -51,5 +52,5 @@ module.exports.dislikeCard = (req, res) => {
     { new: true },
   )
     .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 };
