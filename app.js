@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const ERROR_NOT_FOUND = require('./responses/responses');
+const { ERROR_NOT_FOUND } = require('./responses/responses');
 
 const { PORT = 3000 } = process.env;
 const app = express();
