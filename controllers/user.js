@@ -56,7 +56,7 @@ module.exports.updateUser = (req, res) => {
         res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь не найден' });
         return;
       }
-      res.status(200).send({ user });
+      res.status(200).send({ data: user });
     }).catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
@@ -76,7 +76,7 @@ module.exports.updateAvatar = (req, res) => {
         res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь не найден' });
         return;
       }
-      res.status(200).send({ user });
+      res.status(200).send({ data: user });
     }).catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
