@@ -19,7 +19,12 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(201).send({
+      name: card.name,
+      link: card.link,
+      _id: card._id,
+      owner: card.owner,
+    }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
@@ -31,8 +36,19 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndDelete(cardId)
-    .then((card) => res.status(200).send(card))
-    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .then((card) => {
+      if (!card) {
+        res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
+        return;
+      }
+      res.status(200).send(card);
+    })
+    .catch((err) => {
+      if (err.name === 'UncorrectError') {
+        return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
+      }
+      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+    });
 };
 
 module.exports.likeCard = (req, res) => {
@@ -41,8 +57,19 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .then((card) => res.status(200).send(card))
-    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .then((card) => {
+      if (!card) {
+        res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
+        return;
+      }
+      res.status(200).send(card);
+    })
+    .catch((err) => {
+      if (err.name === 'UncorrectError') {
+        return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
+      }
+      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+    });
 };
 
 module.exports.dislikeCard = (req, res) => {
@@ -51,6 +78,17 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
-    .then((card) => res.status(200).send(card))
-    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .then((card) => {
+      if (!card) {
+        res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
+        return;
+      }
+      res.status(200).send(card);
+    })
+    .catch((err) => {
+      if (err.name === 'UncorrectError') {
+        return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
+      }
+      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+    });
 };
