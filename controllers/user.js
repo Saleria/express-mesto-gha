@@ -1,6 +1,10 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+const bcrypt = require('bcrypt');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
-  ERROR_CODE, SERVER_ERROR, ERROR_NOT_FOUND, OK, CREATED_OK,
+  ERROR_CODE, SERVER_ERROR, ERROR_NOT_FOUND, OK, CREATED_OK, UNAUTHORIZED_ERROR,
 } = require('../responses/responses');
 
 module.exports.getUser = (req, res) => {
@@ -28,13 +32,19 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => res.status(CREATED_OK).send({
       name: user.name,
       about: user.about,
       avatar: user.avatar,
       _id: user.id,
+      email: user.email,
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -81,5 +91,22 @@ module.exports.updateAvatar = (req, res) => {
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      // вернём токен
+      res.send({ token });
+    })
+    .catch((err) => {
+      // возвращаем ошибку аутентификации
+      res
+        .status(UNAUTHORIZED_ERROR)
+        .send({ message: err.message });
     });
 };
