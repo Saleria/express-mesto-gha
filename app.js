@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const NotFoundError = require('./errors/not-found-err');
 const auth = require('./middlewares/auth');
-const login = require('./controllers/user');
-const createUser = require('./controllers/user');
+const { login } = require('./controllers/user');
+const { createUser } = require('./controllers/user');
 
 const { PORT = 3000 } = process.env;
 const app = express();
