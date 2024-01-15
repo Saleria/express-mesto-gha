@@ -1,6 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 
-const urlRegex = /(https?:\/\/)?(www\.)?[a-zA-Z\d.-]+\/?([a-zA-Z\d-._~:/?#[\]@!$&'()*+,;=]+#?)?$/;
+const urlRegex = /https?:\/\/(?:www\.)?[a-zA-Z0-9-]{1,63}(?:\.[a-zA-Z]{2,})+(?:\/[-a-zA-Z0-9()@:%._+~#=]*)*/;
 
 module.exports.getUserByIdValidation = celebrate({
   params: Joi.object().keys({
