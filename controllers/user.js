@@ -108,7 +108,7 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  const { userId } = req.user._id;
+  const userId = req.user._id;
   User.findById(userId)
     .then((user) => {
       res.status(OK).send(user);
