@@ -31,11 +31,9 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndDelete(req.params.cardId)
     .then((card) => {
-      if (card.owner.toString() === req.user._id) {
-        res.status(OK).send(card);
-      } else {
-        next(new ForbiddenError('Вы не можете удалить карточку другого пользователя'));
-      }
+      if (card.owner.toString() !== req.user._id) {
+        return next(new ForbiddenError('Вы не можете удалить карточку другого пользователя'));
+      } return res.status(OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
