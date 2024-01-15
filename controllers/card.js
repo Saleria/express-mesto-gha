@@ -32,14 +32,14 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndDelete(req.params.cardId)
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
-        return next(new ForbiddenError('Вы не можете удалить карточку другого пользователя'));
+        next(new ForbiddenError('Вы не можете удалить карточку другого пользователя'));
+      } else if (!card) {
+        next(new BadRequest('Переданы некорректные данные'));
       } return res.status(OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Карточка не найдена'));
-      } else if (err.name === 'CastError') {
-        next(new BadRequest('Переданы некорректные данные'));
       }
       next(err);
     });
