@@ -19,8 +19,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post('/signin', loginValidatoin, login);
 app.post('/signup', createUserValidation, createUser);
 
-app.use('/users', auth, require('./routes/user'));
-app.use('/cards', auth, require('./routes/card'));
+app.use(auth);
+app.use('/users', require('./routes/user'));
+app.use('/cards', require('./routes/card'));
 
 app.use((req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
