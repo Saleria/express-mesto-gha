@@ -7,6 +7,7 @@ const auth = require('./middlewares/auth');
 const { login } = require('./controllers/user');
 const { createUser } = require('./controllers/user');
 const { loginValidatoin, createUserValidation } = require('./middlewares/validator');
+const errorHandler = require('./middlewares/error-handler');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -29,15 +30,7 @@ app.use((req, res, next) => {
 
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res.status(err.statusCode).send({
-    message: statusCode === 500
-      ? 'На сервере произошла ошибка'
-      : message,
-  });
-  next();
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server listenin on port ${PORT}`);
